@@ -2,7 +2,7 @@ defmodule TodoApi.Users do
   @moduledoc """
   The Users context.
   """
-
+  import Ecto.Changeset
   import Ecto.Query, warn: false
   alias TodoApi.Repo
 
@@ -18,7 +18,11 @@ defmodule TodoApi.Users do
 
   """
   def list_todos do
-    Repo.all(Todo)
+    Repo.all(
+      from t in "todos",
+      order_by: [asc: t.order],
+      select: [:id, :detail, :title, :order]
+    )
   end
 
   @doc """
@@ -100,5 +104,57 @@ defmodule TodoApi.Users do
   """
   def change_todo(%Todo{} = todo, attrs \\ %{}) do
     Todo.changeset(todo, attrs)
+  end
+
+
+  def set_last_nil_order_to_curr_id(id) do
+    query = from t in "todos",
+            where: is_nil(t.order),
+            select: t.id
+    todo_id = Repo.one(query)
+    IO.puts(Repo.aggregate(Todo, :count, :id))
+    if Repo.aggregate(Todo, :count, :id) >= 1 do
+      todoToUpdate = get_todo!(todo_id)
+      change_todo(todoToUpdate, %{"order" => id})
+    end
+  end
+
+  def get_largest_order() do
+    if Repo.aggregate(Todo, :count, :id) >= 1 do
+      query = from t in "todos",
+            order_by: [desc: :order],
+            select: t.order,
+            limit: 1
+      lastOrder = Repo.one(query)
+      # IO.puts(lastOrder)
+      lastOrder+1
+    else
+      1
+    end
+  end
+
+  def change_todo_order(id, newListOrder) do
+    currentListOrder = Repo.one!(
+        from t in "todos",
+        where: t.id == ^id,
+        select: t.order,
+        limit: 1
+    )
+    if(newListOrder > currentListOrder) do
+      IO.puts("GOING UP!")
+      from(t in Todo,
+      update: [set: [order: fragment("\"order\" - 1")]],
+      where: t.order <= ^newListOrder and t.order > ^currentListOrder)
+      |> Repo.update_all([])
+    else
+      IO.puts("GOING DOWN!")
+      from(t in Todo,
+      update: [set: [order: fragment("\"order\" + 1")]],
+      where: t.order >= ^newListOrder and t.order < ^currentListOrder)
+      |> Repo.update_all([])
+    end
+    Repo.get_by(Todo, id: id)
+      |> change(%{order: newListOrder})
+      |> Repo.update()
   end
 end

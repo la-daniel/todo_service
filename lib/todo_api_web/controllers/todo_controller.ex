@@ -12,7 +12,12 @@ defmodule TodoApiWeb.TodoController do
   end
 
   def create(conn, %{"todo" => todo_params}) do
+    # IO.puts("HALLO")
+    # IO.puts(Users.get_largest_order())
+    latestOrder = Users.get_largest_order()
+    todo_params = Map.put(todo_params, "order", latestOrder)
     with {:ok, %Todo{} = todo} <- Users.create_todo(todo_params) do
+      # IO.inspect(todo)
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.todo_path(conn, :show, todo))
@@ -37,7 +42,15 @@ defmodule TodoApiWeb.TodoController do
     todo = Users.get_todo!(id)
 
     with {:ok, %Todo{}} <- Users.delete_todo(todo) do
-      send_resp(conn, :no_content, "")
+      render(conn, "show.json", todo: todo)
+    end
+  end
+
+  def change_order(conn, %{"id" => id, "newListOrder" => newListOrder}) do
+    todo = Users.get_todo!(id)
+
+    with {:ok, %Todo{} = todo} <- Users.change_todo_order(id, newListOrder) do
+      render(conn, "show.json", todo: todo)
     end
   end
 end

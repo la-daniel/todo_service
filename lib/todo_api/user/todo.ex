@@ -14,6 +14,6 @@ defmodule TodoApi.User.Todo do
   def changeset(todo, attrs) do
     todo
     |> cast(attrs, [:title, :details, :order])
-    |> validate_required([:title, :details, :order])
+    |> validate_required([:title, :details])
   end
 end

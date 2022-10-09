@@ -5,7 +5,7 @@ defmodule TodoApi.Repo.Migrations.CreateTodos do
     create table(:todos) do
       add :title, :string
       add :detail, :string
-      add :order, :integer
+      add :order, :integer, null: true
 
       timestamps()
     end

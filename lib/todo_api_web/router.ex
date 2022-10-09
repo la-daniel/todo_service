@@ -17,7 +17,7 @@ defmodule TodoApiWeb.Router do
   scope "/", TodoApiWeb do
     pipe_through :browser
     resources "/todos", TodoController, except: [:new, :edit]
-
+    post "/change_order", TodoController, :change_order
     get "/", PageController, :index
   end
 

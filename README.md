@@ -1,6 +1,6 @@
 # TodoApi
 
-This is a small project API for managing TODO items.
+This is a small project API made in Elixir with Phoenix for managing TODO items.
 
 To start the Phoenix server:
 

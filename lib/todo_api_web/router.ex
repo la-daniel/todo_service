@@ -6,7 +6,7 @@ defmodule TodoApiWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {TodoApiWeb.LayoutView, :root}
-    # plug :protect_from_forgery
+    plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
 
@@ -16,9 +16,10 @@ defmodule TodoApiWeb.Router do
 
   scope "/", TodoApiWeb do
     pipe_through :browser
+    live "/", Todo
     resources "/todos", TodoController, except: [:new, :edit]
     post "/change_order", TodoController, :change_order
-    get "/", PageController, :index
+    # get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.

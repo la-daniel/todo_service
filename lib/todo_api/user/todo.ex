@@ -3,7 +3,7 @@ defmodule TodoApi.User.Todo do
   import Ecto.Changeset
 
   schema "todos" do
-    field :details, :string
+    field :detail, :string
     field :order, :integer
     field :title, :string
 
@@ -13,7 +13,7 @@ defmodule TodoApi.User.Todo do
   @doc false
   def changeset(todo, attrs) do
     todo
-    |> cast(attrs, [:title, :details, :order])
-    |> validate_required([:title, :details])
+    |> cast(attrs, [:title, :detail, :order])
+    |> validate_required([:title, :detail])
   end
 end

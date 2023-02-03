@@ -1,0 +1,47 @@
+
+    <.form let={f} for={@changeset} phx-change="validate" phx-submit="save" class="flex flex-col" id="hallo">
+      <%= label f, :title %>
+      <%= text_input f, :title, class: "flex-auto"  %>
+      <%= error_tag f, :title %>
+
+      <%= label f, :detail %>
+      <%= text_input f, :detail %>
+      <%= error_tag f, :detail %>
+
+      <%=  submit "Save" , class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    </.form>
+
+    <hr class="mt-3">
+      <%= for todo <- @todos do %>
+        <div class="m-4" id={"view_#{todo.id}"} >
+          <b><%= todo.title %></b>
+          <br>
+          <%= todo.detail %>
+          <br>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" phx-value-todo_id={ todo.id }
+          phx-click={toggle_todo(todo.id)}>Edit</button>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" phx-click="delete"
+            phx-value-todo={ todo.id }> Delete Todo</button>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" phx-click="reorder" phx-value-current-order={todo.order} phx-value-move-to={todo.order}></button>
+        </div>
+        <div class="m-4" id={"edit_#{todo.id}"} style="display:none">
+          <.form let={todo} for={Users.change_todo(todo)} phx-change="validate" phx-submit="edit" class="flex flex-col" id="hallo_edit" phx-value-todo={todo.id}>
+
+            <%= text_input todo, :id, style: "display:none"%>
+
+            <%= label todo, :title %>
+            <%= text_input todo, :title, class: "flex-auto"  %>
+            <%= error_tag todo, :title %>
+
+            <%= label todo, :detail %>
+            <%= text_input todo, :detail %>
+            <%= error_tag todo, :detail %>
+
+            <div>
+              <%=  submit "Save" , class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+              </div>
+          </.form>
+              <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded" phx-click={toggle_todo(todo.id)}>Cancel</button>
+        </div>
+        <hr>
+      <% end %>

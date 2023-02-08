@@ -166,9 +166,6 @@ defmodule TodoApi.Users do
           limit: 1
       )
 
-    IO.puts(maxListOrder)
-    IO.puts(newListOrder)
-
     cond do
       newListOrder > currentListOrder && maxListOrder >= newListOrder ->
         IO.puts("GOING UP!")

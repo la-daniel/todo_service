@@ -3,7 +3,6 @@ defmodule TodoApiWeb.Todo do
   require Logger
   require Phoenix.Component
   alias TodoApi.Users
-  alias Phoenix.LiveView.JS
 
   def mount(_params, _session, socket) do
     {:ok,
@@ -103,6 +102,15 @@ defmodule TodoApiWeb.Todo do
 
   def handle_event("cancel_edit", _todo_params, socket) do
     {:noreply, assign(socket, %{changeset_edit: Users.change_todo(%Users.Todo{})})}
+  end
+
+  def handle_event("dropped", %{"draggedId" => dragged_id, "dropzoneId" => drop_zone_id,"draggableIndex" => draggable_index}, %{assigns: _assigns} = socket) do
+    Logger.warn(dragged_id)
+
+    Logger.warn(drop_zone_id)
+
+    Logger.warn(draggable_index)
+    {:noreply, socket}
   end
 
 end

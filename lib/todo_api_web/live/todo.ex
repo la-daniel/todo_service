@@ -94,9 +94,9 @@ defmodule TodoApiWeb.Todo do
   end
 
   def handle_event("start_edit", todo_params, socket) do
-    Logger.info(todo_params["todo_id"])
+    # Logger.info(todo_params["todo_id"])
     todo = Users.get_todo!(todo_params["todo_id"])
-    Logger.info(Users.change_todo(todo))
+    # Logger.info(Users.change_todo(todo))
     {:noreply, assign(socket, %{changeset_edit: Users.change_todo(todo)})}
   end
 

@@ -1,4 +1,4 @@
-defmodule TodoApi.User do
+defmodule TodoApi.Todo.User do
   use Ecto.Schema
   import Ecto.Changeset
 

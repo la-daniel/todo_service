@@ -19,6 +19,10 @@ defmodule TodoApiWeb.Router do
     # live "/", Todo
     resources "/todos", TodoController, except: [:new, :edit]
     post "/change_order", TodoController, :change_order
+    resources "/users", UserController, except: [:new, :edit]
+    resources "/lists", ListController, except: [:new, :edit]
+    resources "/tasks", TaskController, except: [:new, :edit]
+    resources "/permissions", PermissionController, except: [:new, :edit]
     # get "/", PageController, :index
   end
 

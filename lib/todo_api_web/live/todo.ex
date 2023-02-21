@@ -2,7 +2,8 @@ defmodule TodoApiWeb.Todo do
   use TodoApiWeb, :live_view
   require Logger
   require Phoenix.Component
-  alias TodoApi.Users
+  alias TodoApi.Todo.Task
+  alias TodoApi.Todo
 
   def mount(_params, _session, socket) do
     {:ok,
@@ -16,12 +17,12 @@ defmodule TodoApiWeb.Todo do
 
   def assign_todo_list(socket) do
     socket
-    |> assign(:todos, Users.list_todos())
+    |> assign(:todos, Todo.list_tasks())
   end
 
   def assign_todo(socket) do
     socket
-    |> assign(:todo, %Users.Todo{})
+    |> assign(:todo, %Task{})
   end
 
   def assign_show_create(socket) do
@@ -30,11 +31,11 @@ defmodule TodoApiWeb.Todo do
   end
 
   def assign_changeset(socket) do
-    assign(socket, %{changeset: Users.change_todo(%Users.Todo{})})
+    assign(socket, %{changeset: Task.changeset(%Task{})})
   end
 
   def assign_changeset_edit(socket) do
-    assign(socket, %{changeset_edit: Users.change_todo(%Users.Todo{})})
+    assign(socket, %{changeset_edit: Users.change_todo(%Task{})})
   end
 
   def handle_event("delete", params, socket) do
@@ -46,7 +47,7 @@ defmodule TodoApiWeb.Todo do
 
   def handle_event("validate", %{"todo" => params}, socket) do
     changeset =
-      %Users.Todo{}
+      %Task{}
       |> Users.change_todo(params)
       |> Map.put(:action, :insert)
 
@@ -55,7 +56,7 @@ defmodule TodoApiWeb.Todo do
 
   def handle_event("validate_edit", %{"todo" => params}, socket) do
     changeset =
-      %Users.Todo{}
+      %Task{}
       |> Users.change_todo(params)
       |> Map.put(:action, :insert)
 
@@ -66,11 +67,11 @@ defmodule TodoApiWeb.Todo do
     update_todo = Users.get_todo!(todo_params["id"])
     Users.update_todo(update_todo, todo_params)
     # Ecto.Changeset.change(socket.assigns.changeset_edit, id: 0)
-    assign(socket, %{changeset_edit: Users.change_todo(%Users.Todo{})})
+    assign(socket, %{changeset_edit: Users.change_todo(%Task{})})
     Logger.info(socket.assigns.changeset_edit)
 
     {:noreply,
-     assign(socket, todos: Users.list_todos(), changeset_edit: Users.change_todo(%Users.Todo{}))}
+     assign(socket, todos: Users.list_todos(), changeset_edit: Users.change_todo(%Task{}))}
   end
 
   def handle_event("move", todo_params, socket) do
@@ -101,7 +102,7 @@ defmodule TodoApiWeb.Todo do
   end
 
   def handle_event("cancel_edit", _todo_params, socket) do
-    {:noreply, assign(socket, %{changeset_edit: Users.change_todo(%Users.Todo{})})}
+    {:noreply, assign(socket, %{changeset_edit: Users.change_todo(%Task{})})}
   end
 
   def handle_event("dropped", %{"draggedId" => dragged_id, "dropzoneId" => drop_zone_id,"draggableIndex" => draggable_index}, %{assigns: _assigns} = socket) do

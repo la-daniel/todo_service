@@ -6,6 +6,10 @@ defmodule TodoApiWeb.ListView do
     %{data: render_many(lists, ListView, "list.json")}
   end
 
+  def render("index_all.json", %{lists: lists}) do
+    %{data: render_many(lists, ListView, "all.json")}
+  end
+
   def render("show.json", %{list: list}) do
     %{data: render_one(list, ListView, "list.json")}
   end
@@ -15,6 +19,15 @@ defmodule TodoApiWeb.ListView do
       id: list.id,
       order: list.order,
       title: list.title
+    }
+  end
+
+  def render("all.json", %{list: list}) do
+    %{
+      id: list.id,
+      order: list.order,
+      title: list.title,
+      tasks: list.tasks
     }
   end
 end

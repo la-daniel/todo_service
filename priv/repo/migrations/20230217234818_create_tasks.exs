@@ -6,7 +6,6 @@ defmodule TodoApi.Repo.Migrations.CreateTasks do
       add :detail, :string
       add :title, :string
       add :order, :integer
-      add :comment, :string
       add :list_id, references(:lists, on_delete: :nothing)
       add :assigned_to, references(:users, on_delete: :nothing)
 

@@ -12,6 +12,10 @@ defmodule TodoApiWeb.TaskController do
   end
 
   def create(conn, %{"task" => task_params}) do
+    latestOrder =  Todo.get_largest_order()
+    task_params = Map.put(task_params, "order", latestOrder)
+
+    IO.inspect(task_params)
     with {:ok, %Task{} = task} <- Todo.create_task(task_params) do
       conn
       |> put_status(:created)
@@ -40,4 +44,20 @@ defmodule TodoApiWeb.TaskController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def change_order(conn, %{"id" => id, "newListOrder" => newListOrder}) do
+    todo = Todo.get_task!(id)
+    IO.inspect(todo)
+    IO.inspect(newListOrder)
+    with {:ok, %Task{} = task} <- Todo.change_todo_order(id, newListOrder) do
+      IO.inspect(task)
+      render(conn, "show.json", task: task)
+    else 
+      err -> err
+      send_resp(conn, :no_content, "")
+    end
+  end
+
+  
+
 end

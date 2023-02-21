@@ -6,18 +6,16 @@ defmodule TodoApiWeb.TaskControllerTest do
   alias TodoApi.Todo.Task
 
   @create_attrs %{
-    comment: "some comment",
     detail: "some detail",
     order: 42,
     title: "some title"
   }
   @update_attrs %{
-    comment: "some updated comment",
     detail: "some updated detail",
     order: 43,
     title: "some updated title"
   }
-  @invalid_attrs %{comment: nil, detail: nil, order: nil, title: nil}
+  @invalid_attrs %{detail: nil, order: nil, title: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -39,7 +37,6 @@ defmodule TodoApiWeb.TaskControllerTest do
 
       assert %{
                "id" => ^id,
-               "comment" => "some comment",
                "detail" => "some detail",
                "order" => 42,
                "title" => "some title"
@@ -63,7 +60,6 @@ defmodule TodoApiWeb.TaskControllerTest do
 
       assert %{
                "id" => ^id,
-               "comment" => "some updated comment",
                "detail" => "some updated detail",
                "order" => 43,
                "title" => "some updated title"

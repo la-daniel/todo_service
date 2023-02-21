@@ -64,4 +64,34 @@ defmodule TodoApi.TodoFixtures do
 
     permission
   end
+
+  @doc """
+  Generate a comment.
+  """
+  def comment_fixture(attrs \\ %{}) do
+    {:ok, comment} =
+      attrs
+      |> Enum.into(%{
+        comment: "some comment"
+      })
+      |> TodoApi.Todo.create_comment()
+
+    comment
+  end
+
+  @doc """
+  Generate a task.
+  """
+  def task_fixture(attrs \\ %{}) do
+    {:ok, task} =
+      attrs
+      |> Enum.into(%{
+        detail: "some detail",
+        order: 42,
+        title: "some title"
+      })
+      |> TodoApi.Todo.create_task()
+
+    task
+  end
 end

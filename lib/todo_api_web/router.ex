@@ -17,12 +17,15 @@ defmodule TodoApiWeb.Router do
   scope "/", TodoApiWeb do
     pipe_through :browser
     # live "/", Todo
-    resources "/todos", TodoController, except: [:new, :edit]
-    post "/change_order", TodoController, :change_order
+    # resources "/todos", TodoController, except: [:new, :edit]
+    post "/change_order", TaskController, :change_order
     resources "/users", UserController, except: [:new, :edit]
     resources "/lists", ListController, except: [:new, :edit]
     resources "/tasks", TaskController, except: [:new, :edit]
+    resources "/comments", CommentController, except: [:new, :edit]
     resources "/permissions", PermissionController, except: [:new, :edit]
+    get "/get_all_todos", UserController, :get_all_todos
+    get "/get_all_lists", ListController, :get_all_lists
     # get "/", PageController, :index
   end
 

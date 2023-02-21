@@ -2,11 +2,10 @@ import Config
 
 # Configure your database
 config :todo_api, TodoApi.Repo,
-  username: System.get_env("PGUSER"),
-  password: System.get_env("PGPASSWORD"),
-  hostname: System.get_env("PGHOST"),
-  database: System.get_env("PGDATABASE"),
-  stacktrace: true,
+username: "postgres",
+  password: "Pass1234!",
+  hostname: "localhost",
+  database: "todo_api_dev",  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

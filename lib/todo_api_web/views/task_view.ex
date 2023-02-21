@@ -15,8 +15,7 @@ defmodule TodoApiWeb.TaskView do
       id: task.id,
       detail: task.detail,
       title: task.title,
-      order: task.order,
-      comment: task.comment
+      order: task.order
     }
   end
 end

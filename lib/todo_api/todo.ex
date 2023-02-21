@@ -4,6 +4,7 @@ defmodule TodoApi.Todo do
   """
 
   import Ecto.Query, warn: false
+  alias Mix.Task
   alias TodoApi.Repo
 
   alias TodoApi.Todo.User
@@ -210,7 +211,13 @@ defmodule TodoApi.Todo do
 
   """
   def list_tasks do
-    Repo.all(Task)
+    # Repo.all(Task)
+    Repo.all(
+      from t in "tasks",
+        order_by: [asc: t.order],
+        select: [:id, :detail, :title, :order]
+    )
+
   end
 
   @doc """
@@ -388,5 +395,209 @@ defmodule TodoApi.Todo do
   """
   def change_permission(%Permission{} = permission, attrs \\ %{}) do
     Permission.changeset(permission, attrs)
+  end
+
+
+  def set_last_nil_order_to_curr_id(id) do
+    query =
+      from t in "todos",
+        where: is_nil(t.order),
+        select: t.id
+
+    todo_id = Repo.one(query)
+    IO.puts(Repo.aggregate(Todo, :count, :id))
+
+    if Repo.aggregate(Todo, :count, :id) >= 1 do
+      todoToUpdate = get_task!(todo_id)
+      change_task(todoToUpdate, %{"order" => id})
+    end
+  end
+
+  def get_largest_order() do
+    if Repo.aggregate(Task, :count, :id) >= 1 do
+      query =
+        from t in "tasks",
+          order_by: [desc: :order],
+          select: t.order,
+          limit: 1
+
+      lastOrder = Repo.one(query)
+      # IO.puts(lastOrder)
+      lastOrder + 1
+    else
+      1
+    end
+  end
+
+  def change_todo_order(id, newListOrder) do
+    currentListOrder =
+      Repo.one!(
+        from t in "tasks",
+          where: t.id == ^id,
+          select: t.order,
+          limit: 1
+      )
+
+    maxListOrder =
+      Repo.one!(
+        from t in "tasks",
+          order_by: [desc: :order],
+          select: t.order,
+          limit: 1
+      )
+
+    cond do
+      newListOrder > currentListOrder && maxListOrder >= newListOrder ->
+        IO.puts("GOING UP!")
+
+        from(t in Task,
+          update: [set: [order: fragment("\"order\" - 1")]],
+          where: t.order <= ^newListOrder and t.order > ^currentListOrder
+        )
+        |> Repo.update_all([])
+
+        Repo.get_by(Task, id: id)
+        |> change_task(%{order: newListOrder})
+        |> Repo.update()
+
+      newListOrder < currentListOrder && newListOrder >= 1 ->
+        IO.puts("GOING DOWN!")
+
+        from(t in Task,
+          update: [set: [order: fragment("\"order\" + 1")]],
+          where: t.order >= ^newListOrder and t.order < ^currentListOrder
+        )
+        |> Repo.update_all([])
+
+        Repo.get_by(Task, id: id)
+        |> change_task(%{order: newListOrder})
+        |> Repo.update()
+
+      true ->
+        IO.puts("Nothing")
+        :nil
+    end
+
+     # Repo.get_by(Task, id: id)
+     # |> change_task(%{order: newListOrder})
+     # |> Repo.update()
+  end
+
+  alias TodoApi.Todo.Comment
+
+  @doc """
+  Returns the list of comments.
+
+  ## Examples
+
+      iex> list_comments()
+      [%Comment{}, ...]
+
+  """
+  def list_comments do
+    Repo.all(Comment)
+  end
+
+  @doc """
+  Gets a single comment.
+
+  Raises `Ecto.NoResultsError` if the Comment does not exist.
+
+  ## Examples
+
+      iex> get_comment!(123)
+      %Comment{}
+
+      iex> get_comment!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_comment!(id), do: Repo.get!(Comment, id)
+
+  @doc """
+  Creates a comment.
+
+  ## Examples
+
+      iex> create_comment(%{field: value})
+      {:ok, %Comment{}}
+
+      iex> create_comment(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_comment(attrs \\ %{}) do
+    %Comment{}
+    |> Comment.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a comment.
+
+  ## Examples
+
+      iex> update_comment(comment, %{field: new_value})
+      {:ok, %Comment{}}
+
+      iex> update_comment(comment, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_comment(%Comment{} = comment, attrs) do
+    comment
+    |> Comment.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a comment.
+
+  ## Examples
+
+      iex> delete_comment(comment)
+      {:ok, %Comment{}}
+
+      iex> delete_comment(comment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_comment(%Comment{} = comment) do
+    Repo.delete(comment)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking comment changes.
+
+  ## Examples
+
+      iex> change_comment(comment)
+      %Ecto.Changeset{data: %Comment{}}
+
+  """
+  def change_comment(%Comment{} = comment, attrs \\ %{}) do
+    Comment.changeset(comment, attrs)
+  end
+
+  def get_all_todos() do
+    users = Repo.all(
+      from user in TodoApi.Todo.User,
+      left_join: lists in assoc(user, :lists),
+      left_join: tasks in assoc(lists, :tasks),
+      preload: [lists: [tasks: [:comments]]]
+    )
+    {users}
+  end
+
+  def get_all_lists() do
+    lists = Repo.all(
+      from list in TodoApi.Todo.List,
+      left_join: tasks in assoc(list, :tasks),
+      left_join: comments in assoc(tasks, :comments),
+      group_by: [list.id],
+      preload:  [tasks: [:comments]]
+    )
+
+    {lists}
   end
 end

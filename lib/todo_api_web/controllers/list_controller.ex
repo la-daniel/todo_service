@@ -40,4 +40,12 @@ defmodule TodoApiWeb.ListController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def get_all_lists(conn, _params) do
+    lists = Todo.get_all_lists()
+    # with {:ok, %User{}} <- user do
+      render(conn, "index_all.json", lists: elem(lists, 0))
+    # end
+  end
+
 end

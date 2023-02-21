@@ -40,4 +40,12 @@ defmodule TodoApiWeb.UserController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def get_all_todos(conn, _params) do
+    users = Todo.get_all_todos()
+    # IO.inspect(users)
+    # with {:ok, %User{}} <- user do
+      render(conn, "index_all.json", users: elem(users, 0))
+    # end
+  end
 end

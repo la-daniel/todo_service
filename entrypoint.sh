@@ -17,7 +17,7 @@ if [[ -z `psql -Atqc "\\list $PGDATABASE"` ]]; then
   mix run priv/repo/seeds.exs
   echo "Database $PGDATABASE created."
 fi
-
+# exec mix ecto.reset
 # exec mix ecto.create
 # exec mix ecto.migrate
 

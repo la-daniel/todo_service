@@ -5,7 +5,8 @@ config :todo_api, TodoApi.Repo,
 username: "postgres",
   password: "Pass1234!",
   hostname: "localhost",
-  database: "todo_api_dev",  stacktrace: true,
+  database: "todo_api_dev",
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

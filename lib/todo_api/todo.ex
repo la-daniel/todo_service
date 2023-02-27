@@ -413,35 +413,72 @@ defmodule TodoApi.Todo do
     end
   end
 
-  def get_largest_order() do
+  def get_largest_task_order(list_id) do
+    IO.inspect(list_id)
     if Repo.aggregate(Task, :count, :id) >= 1 do
       query =
-        from t in "tasks",
-          order_by: [desc: :order],
+        from t in Task,
+          where: t.list_id == ^list_id,
           select: t.order,
+          order_by: [desc: :order],
           limit: 1
 
       lastOrder = Repo.one(query)
-      # IO.puts(lastOrder)
-      lastOrder + 1
+      if lastOrder != nil do
+        lastOrder = lastOrder + 1
+      else
+        1
+      end
     else
       1
     end
   end
 
+  def get_largest_list_order(user_id) do
+    IO.inspect(user_id)
+    if Repo.aggregate(Task, :count, :id) >= 1 do
+      query =
+        from l in "lists",
+          order_by: [desc: :order],
+          select: l.order,
+          where: l.user_id == ^user_id,
+          limit: 1
+
+      lastOrder = Repo.one(query)
+      # IO.puts(lastOrder)
+      if lastOrder != nil do
+        lastOrder = lastOrder + 1
+      else
+        1
+      end
+    else
+      1
+    end
+  end
+ 
   def change_todo_order(id, newListOrder) do
+    list_id = Repo.one!(
+      from t in Task,
+      where: t.id == ^id,
+      select: t.list_id,
+      limit: 1
+    )
+
+    IO.inspect(list_id)
     currentListOrder =
       Repo.one!(
         from t in "tasks",
-          where: t.id == ^id,
+          where: t.id == ^id and t.list_id == ^list_id,
           select: t.order,
           limit: 1
       )
 
+    IO.inspect(currentListOrder)
     maxListOrder =
       Repo.one!(
         from t in "tasks",
           order_by: [desc: :order],
+          where: t.list_id == ^list_id,
           select: t.order,
           limit: 1
       )
@@ -452,7 +489,7 @@ defmodule TodoApi.Todo do
 
         from(t in Task,
           update: [set: [order: fragment("\"order\" - 1")]],
-          where: t.order <= ^newListOrder and t.order > ^currentListOrder
+          where: t.order <= ^newListOrder and t.order > ^currentListOrder and t.list_id == ^list_id
         )
         |> Repo.update_all([])
 
@@ -465,7 +502,7 @@ defmodule TodoApi.Todo do
 
         from(t in Task,
           update: [set: [order: fragment("\"order\" + 1")]],
-          where: t.order >= ^newListOrder and t.order < ^currentListOrder
+          where: t.order >= ^newListOrder and t.order < ^currentListOrder and t.list_id == ^list_id
         )
         |> Repo.update_all([])
 
@@ -595,9 +632,13 @@ defmodule TodoApi.Todo do
       left_join: tasks in assoc(list, :tasks),
       left_join: comments in assoc(tasks, :comments),
       group_by: [list.id],
-      preload:  [tasks: [:comments]]
+      preload:  [tasks: ^from(t in Task, order_by: t.order, preload: [:comments])]
     )
 
     {lists}
   end
+
+  # def get_comments_from_task_id(id) do
+  #   comments = Repo.all()
+  # end
 end

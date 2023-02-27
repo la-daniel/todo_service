@@ -12,6 +12,10 @@ defmodule TodoApiWeb.ListController do
   end
 
   def create(conn, %{"list" => list_params}) do
+    IO.inspect(list_params)
+    latestOrder =  Todo.get_largest_list_order(1)
+    list_params = Map.put(list_params, "order", latestOrder)
+    IO.inspect(list_params)
     with {:ok, %List{} = list} <- Todo.create_list(list_params) do
       conn
       |> put_status(:created)

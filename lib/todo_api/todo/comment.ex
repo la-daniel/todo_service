@@ -13,7 +13,7 @@ defmodule TodoApi.Todo.Comment do
   @doc false
   def changeset(comment, attrs) do
     comment
-    |> cast(attrs, [:comment])
-    |> validate_required([:comment])
+    |> cast(attrs, [:comment, :task_id])
+    |> validate_required([:comment, :task_id])
   end
 end

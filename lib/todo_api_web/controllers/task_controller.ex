@@ -12,10 +12,10 @@ defmodule TodoApiWeb.TaskController do
   end
 
   def create(conn, %{"task" => task_params}) do
-    latestOrder =  Todo.get_largest_order()
+    latestOrder =  Todo.get_largest_task_order(String.to_integer(task_params["list_id"]))
     task_params = Map.put(task_params, "order", latestOrder)
-
     IO.inspect(task_params)
+    # task_params = Map.put(task_params, "list_id", String.to_integer(task_params["list_id"])) 
     with {:ok, %Task{} = task} <- Todo.create_task(task_params) do
       conn
       |> put_status(:created)

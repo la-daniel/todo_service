@@ -94,4 +94,62 @@ defmodule TodoApi.TodoFixtures do
 
     task
   end
+
+  @doc """
+  Generate a list_permission.
+  """
+  def list_permission_fixture(attrs \\ %{}) do
+    {:ok, list_permission} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> TodoApi.Todo.create_list_permission()
+
+    list_permission
+  end
+
+  @doc """
+  Generate a task_permission.
+  """
+  def task_permission_fixture(attrs \\ %{}) do
+    {:ok, task_permission} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> TodoApi.Todo.create_task_permission()
+
+    task_permission
+  end
+
+  @doc """
+  Generate a task_permission.
+  """
+  def task_permission_fixture(attrs \\ %{}) do
+    {:ok, task_permission} =
+      attrs
+      |> Enum.into(%{
+        read: true,
+        write: true
+      })
+      |> TodoApi.Todo.create_task_permission()
+
+    task_permission
+  end
+
+  @doc """
+  Generate a list_permission.
+  """
+  def list_permission_fixture(attrs \\ %{}) do
+    {:ok, list_permission} =
+      attrs
+      |> Enum.into(%{
+        read: true,
+        write: true
+      })
+      |> TodoApi.Todo.create_list_permission()
+
+    list_permission
+  end
 end

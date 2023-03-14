@@ -1,6 +1,6 @@
-defmodule TodoApiWeb.ListView do
+defmodule TodoApiWeb.API.ListView do
   use TodoApiWeb, :view
-  alias TodoApiWeb.ListView
+  alias TodoApiWeb.API.ListView
 
   def render("index.json", %{lists: lists}) do
     %{data: render_many(lists, ListView, "list.json")}
@@ -23,11 +23,15 @@ defmodule TodoApiWeb.ListView do
   end
 
   def render("all.json", %{list: list}) do
+    # IO.inspect("list view")
+    # IO.inspect(list)
     %{
       id: list.id,
       order: list.order,
       title: list.title,
-      tasks: list.tasks
+      tasks: list.tasks,
+      user: list.user,
+      list_permissions: list.list_permissions
     }
   end
 end

@@ -1,4 +1,4 @@
-defmodule TodoApiWeb.CommentController do
+defmodule TodoApiWeb.API.CommentController do
   use TodoApiWeb, :controller
 
   alias TodoApi.Todo
@@ -15,7 +15,7 @@ defmodule TodoApiWeb.CommentController do
     with {:ok, %Comment{} = comment} <- Todo.create_comment(comment_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.comment_path(conn, :show, comment))
+      # |> put_resp_header("location", Routes.comment_path(conn, :show, comment))
       |> render("show.json", comment: comment)
     end
   end
@@ -37,7 +37,7 @@ defmodule TodoApiWeb.CommentController do
     comment = Todo.get_comment!(id)
 
     with {:ok, %Comment{}} <- Todo.delete_comment(comment) do
-      send_resp(conn, :no_content, "")
+      render(conn, "show.json", comment: comment)
     end
   end
 end

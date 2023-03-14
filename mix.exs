@@ -51,6 +51,7 @@ defmodule TodoApi.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:ex_fontawesome, "~> 0.7.2"},
+      {:pow, "~> 1.0.27"}
     ]
   end
 

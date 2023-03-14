@@ -6,7 +6,7 @@ defmodule TodoApi.Repo.Migrations.CreateLists do
       add :order, :integer
       add :title, :string
       add :user_id, references(:users, on_delete: :nothing)
-      add :assigned_to, references(:users, on_delete: :nothing)
+      add :assigned_to, references(:users, on_delete: :delete_all)
 
       timestamps()
     end

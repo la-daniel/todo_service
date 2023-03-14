@@ -338,4 +338,220 @@ defmodule TodoApi.TodoTest do
       assert %Ecto.Changeset{} = Todo.change_task(task)
     end
   end
+
+  describe "list_permissions" do
+    alias TodoApi.Todo.ListPermission
+
+    import TodoApi.TodoFixtures
+
+    @invalid_attrs %{}
+
+    test "list_list_permissions/0 returns all list_permissions" do
+      list_permission = list_permission_fixture()
+      assert Todo.list_list_permissions() == [list_permission]
+    end
+
+    test "get_list_permission!/1 returns the list_permission with given id" do
+      list_permission = list_permission_fixture()
+      assert Todo.get_list_permission!(list_permission.id) == list_permission
+    end
+
+    test "create_list_permission/1 with valid data creates a list_permission" do
+      valid_attrs = %{}
+
+      assert {:ok, %ListPermission{} = list_permission} = Todo.create_list_permission(valid_attrs)
+    end
+
+    test "create_list_permission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Todo.create_list_permission(@invalid_attrs)
+    end
+
+    test "update_list_permission/2 with valid data updates the list_permission" do
+      list_permission = list_permission_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %ListPermission{} = list_permission} = Todo.update_list_permission(list_permission, update_attrs)
+    end
+
+    test "update_list_permission/2 with invalid data returns error changeset" do
+      list_permission = list_permission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Todo.update_list_permission(list_permission, @invalid_attrs)
+      assert list_permission == Todo.get_list_permission!(list_permission.id)
+    end
+
+    test "delete_list_permission/1 deletes the list_permission" do
+      list_permission = list_permission_fixture()
+      assert {:ok, %ListPermission{}} = Todo.delete_list_permission(list_permission)
+      assert_raise Ecto.NoResultsError, fn -> Todo.get_list_permission!(list_permission.id) end
+    end
+
+    test "change_list_permission/1 returns a list_permission changeset" do
+      list_permission = list_permission_fixture()
+      assert %Ecto.Changeset{} = Todo.change_list_permission(list_permission)
+    end
+  end
+
+  describe "task_permissions" do
+    alias TodoApi.Todo.TaskPermission
+
+    import TodoApi.TodoFixtures
+
+    @invalid_attrs %{}
+
+    test "list_task_permissions/0 returns all task_permissions" do
+      task_permission = task_permission_fixture()
+      assert Todo.list_task_permissions() == [task_permission]
+    end
+
+    test "get_task_permission!/1 returns the task_permission with given id" do
+      task_permission = task_permission_fixture()
+      assert Todo.get_task_permission!(task_permission.id) == task_permission
+    end
+
+    test "create_task_permission/1 with valid data creates a task_permission" do
+      valid_attrs = %{}
+
+      assert {:ok, %TaskPermission{} = task_permission} = Todo.create_task_permission(valid_attrs)
+    end
+
+    test "create_task_permission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Todo.create_task_permission(@invalid_attrs)
+    end
+
+    test "update_task_permission/2 with valid data updates the task_permission" do
+      task_permission = task_permission_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %TaskPermission{} = task_permission} = Todo.update_task_permission(task_permission, update_attrs)
+    end
+
+    test "update_task_permission/2 with invalid data returns error changeset" do
+      task_permission = task_permission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Todo.update_task_permission(task_permission, @invalid_attrs)
+      assert task_permission == Todo.get_task_permission!(task_permission.id)
+    end
+
+    test "delete_task_permission/1 deletes the task_permission" do
+      task_permission = task_permission_fixture()
+      assert {:ok, %TaskPermission{}} = Todo.delete_task_permission(task_permission)
+      assert_raise Ecto.NoResultsError, fn -> Todo.get_task_permission!(task_permission.id) end
+    end
+
+    test "change_task_permission/1 returns a task_permission changeset" do
+      task_permission = task_permission_fixture()
+      assert %Ecto.Changeset{} = Todo.change_task_permission(task_permission)
+    end
+  end
+
+  describe "task_permissions" do
+    alias TodoApi.Todo.TaskPermission
+
+    import TodoApi.TodoFixtures
+
+    @invalid_attrs %{read: nil, write: nil}
+
+    test "list_task_permissions/0 returns all task_permissions" do
+      task_permission = task_permission_fixture()
+      assert Todo.list_task_permissions() == [task_permission]
+    end
+
+    test "get_task_permission!/1 returns the task_permission with given id" do
+      task_permission = task_permission_fixture()
+      assert Todo.get_task_permission!(task_permission.id) == task_permission
+    end
+
+    test "create_task_permission/1 with valid data creates a task_permission" do
+      valid_attrs = %{read: true, write: true}
+
+      assert {:ok, %TaskPermission{} = task_permission} = Todo.create_task_permission(valid_attrs)
+      assert task_permission.read == true
+      assert task_permission.write == true
+    end
+
+    test "create_task_permission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Todo.create_task_permission(@invalid_attrs)
+    end
+
+    test "update_task_permission/2 with valid data updates the task_permission" do
+      task_permission = task_permission_fixture()
+      update_attrs = %{read: false, write: false}
+
+      assert {:ok, %TaskPermission{} = task_permission} = Todo.update_task_permission(task_permission, update_attrs)
+      assert task_permission.read == false
+      assert task_permission.write == false
+    end
+
+    test "update_task_permission/2 with invalid data returns error changeset" do
+      task_permission = task_permission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Todo.update_task_permission(task_permission, @invalid_attrs)
+      assert task_permission == Todo.get_task_permission!(task_permission.id)
+    end
+
+    test "delete_task_permission/1 deletes the task_permission" do
+      task_permission = task_permission_fixture()
+      assert {:ok, %TaskPermission{}} = Todo.delete_task_permission(task_permission)
+      assert_raise Ecto.NoResultsError, fn -> Todo.get_task_permission!(task_permission.id) end
+    end
+
+    test "change_task_permission/1 returns a task_permission changeset" do
+      task_permission = task_permission_fixture()
+      assert %Ecto.Changeset{} = Todo.change_task_permission(task_permission)
+    end
+  end
+
+  describe "list_permissions" do
+    alias TodoApi.Todo.ListPermission
+
+    import TodoApi.TodoFixtures
+
+    @invalid_attrs %{read: nil, write: nil}
+
+    test "list_list_permissions/0 returns all list_permissions" do
+      list_permission = list_permission_fixture()
+      assert Todo.list_list_permissions() == [list_permission]
+    end
+
+    test "get_list_permission!/1 returns the list_permission with given id" do
+      list_permission = list_permission_fixture()
+      assert Todo.get_list_permission!(list_permission.id) == list_permission
+    end
+
+    test "create_list_permission/1 with valid data creates a list_permission" do
+      valid_attrs = %{read: true, write: true}
+
+      assert {:ok, %ListPermission{} = list_permission} = Todo.create_list_permission(valid_attrs)
+      assert list_permission.read == true
+      assert list_permission.write == true
+    end
+
+    test "create_list_permission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Todo.create_list_permission(@invalid_attrs)
+    end
+
+    test "update_list_permission/2 with valid data updates the list_permission" do
+      list_permission = list_permission_fixture()
+      update_attrs = %{read: false, write: false}
+
+      assert {:ok, %ListPermission{} = list_permission} = Todo.update_list_permission(list_permission, update_attrs)
+      assert list_permission.read == false
+      assert list_permission.write == false
+    end
+
+    test "update_list_permission/2 with invalid data returns error changeset" do
+      list_permission = list_permission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Todo.update_list_permission(list_permission, @invalid_attrs)
+      assert list_permission == Todo.get_list_permission!(list_permission.id)
+    end
+
+    test "delete_list_permission/1 deletes the list_permission" do
+      list_permission = list_permission_fixture()
+      assert {:ok, %ListPermission{}} = Todo.delete_list_permission(list_permission)
+      assert_raise Ecto.NoResultsError, fn -> Todo.get_list_permission!(list_permission.id) end
+    end
+
+    test "change_list_permission/1 returns a list_permission changeset" do
+      list_permission = list_permission_fixture()
+      assert %Ecto.Changeset{} = Todo.change_list_permission(list_permission)
+    end
+  end
 end

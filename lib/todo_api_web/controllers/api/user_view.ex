@@ -1,6 +1,6 @@
-defmodule TodoApiWeb.UserView do
+defmodule TodoApiWeb.API.V1.UserView do
   use TodoApiWeb, :view
-  alias TodoApiWeb.UserView
+  alias TodoApiWeb.API.V1.UserView
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}
@@ -17,8 +17,8 @@ defmodule TodoApiWeb.UserView do
   def render("user.json", %{user: user}) do
     %{
       id: user.id,
-      username: user.username,
-      password: user.password
+      email: user.email,
+      # password: user.hashed_password
     }
   end
 
@@ -26,8 +26,8 @@ defmodule TodoApiWeb.UserView do
     IO.inspect(user)
     %{
       id: user.id,
-      username: user.username,
-      password: user.password,
+      email: user.username,
+      # password: user.password,
       lists: user.lists
     }
   end

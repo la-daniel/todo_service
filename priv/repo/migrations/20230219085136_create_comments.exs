@@ -4,7 +4,7 @@ defmodule TodoApi.Repo.Migrations.CreateComments do
   def change do
     create table(:comments) do
       add :comment, :string
-      add :task_id, references(:tasks, on_delete: :nothing)
+      add :task_id, references(:tasks, on_delete: :delete_all)
 
       timestamps()
     end

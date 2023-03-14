@@ -1,6 +1,6 @@
-defmodule TodoApiWeb.CommentView do
+defmodule TodoApiWeb.API.CommentView do
   use TodoApiWeb, :view
-  alias TodoApiWeb.CommentView
+  alias TodoApiWeb.API.CommentView
 
   def render("index.json", %{comments: comments}) do
     %{data: render_many(comments, CommentView, "comment.json")}

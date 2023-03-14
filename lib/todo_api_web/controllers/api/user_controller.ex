@@ -1,8 +1,8 @@
-defmodule TodoApiWeb.UserController do
+defmodule TodoApiWeb.API.V1.UserController do
   use TodoApiWeb, :controller
 
   alias TodoApi.Todo
-  alias TodoApi.Todo.User
+  alias TodoApi.Users.User
 
   action_fallback TodoApiWeb.FallbackController
 

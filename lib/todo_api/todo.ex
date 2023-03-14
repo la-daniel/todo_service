@@ -7,7 +7,7 @@ defmodule TodoApi.Todo do
   alias Mix.Task
   alias TodoApi.Repo
 
-  alias TodoApi.Todo.User
+  alias TodoApi.Users.User
 
   @doc """
   Returns the list of users.
@@ -38,6 +38,16 @@ defmodule TodoApi.Todo do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+
+  def get_user_by_email(email) do 
+    
+    query =
+      from u in "users",
+        where: ^email == u.email,
+        select: [u.email, u.id]
+
+    user = Repo.one(query)
+  end
   @doc """
   Creates a user.
 
@@ -629,16 +639,212 @@ defmodule TodoApi.Todo do
   def get_all_lists() do
     lists = Repo.all(
       from list in TodoApi.Todo.List,
+      left_join: user in assoc(list, :user),
       left_join: tasks in assoc(list, :tasks),
+      left_join: list_permissions in assoc(list, :list_permissions),
       left_join: comments in assoc(tasks, :comments),
       group_by: [list.id],
-      preload:  [tasks: ^from(t in Task, order_by: t.order, preload: [:comments])]
+      preload:  [:user, :list_permissions, tasks: ^from(t in Task, left_join: user in assoc(t, :user), order_by: t.order, preload: [:comments, :user])]
     )
-
     {lists}
   end
 
   # def get_comments_from_task_id(id) do
   #   comments = Repo.all()
   # end
+
+  alias TodoApi.Todo.ListPermission
+
+  @doc """
+  Returns the list of list_permissions.
+
+  ## Examples
+
+      iex> list_list_permissions()
+      [%ListPermission{}, ...]
+
+  """
+  def list_list_permissions do
+    Repo.all(ListPermission)
+  end
+
+  @doc """
+  Gets a single list_permission.
+
+  Raises `Ecto.NoResultsError` if the List permission does not exist.
+
+  ## Examples
+
+      iex> get_list_permission!(123)
+      %ListPermission{}
+
+      iex> get_list_permission!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_list_permission!(id), do: Repo.get!(ListPermission, id)
+
+  @doc """
+  Creates a list_permission.
+
+  ## Examples
+
+      iex> create_list_permission(%{field: value})
+      {:ok, %ListPermission{}}
+
+      iex> create_list_permission(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_list_permission(attrs \\ %{}) do
+    IO.inspect(attrs)
+    %ListPermission{}
+    |> ListPermission.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a list_permission.
+
+  ## Examples
+
+      iex> update_list_permission(list_permission, %{field: new_value})
+      {:ok, %ListPermission{}}
+
+      iex> update_list_permission(list_permission, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_list_permission(%ListPermission{} = list_permission, attrs) do
+    list_permission
+    |> ListPermission.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a list_permission.
+
+  ## Examples
+
+      iex> delete_list_permission(list_permission)
+      {:ok, %ListPermission{}}
+
+      iex> delete_list_permission(list_permission)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_list_permission(%ListPermission{} = list_permission) do
+    Repo.delete(list_permission)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking list_permission changes.
+
+  ## Examples
+
+      iex> change_list_permission(list_permission)
+      %Ecto.Changeset{data: %ListPermission{}}
+
+  """
+  def change_list_permission(%ListPermission{} = list_permission, attrs \\ %{}) do
+    ListPermission.changeset(list_permission, attrs)
+  end
+
+  alias TodoApi.Todo.TaskPermission
+
+  @doc """
+  Returns the list of task_permissions.
+
+  ## Examples
+
+      iex> list_task_permissions()
+      [%TaskPermission{}, ...]
+
+  """
+  def list_task_permissions do
+    Repo.all(TaskPermission)
+  end
+
+  @doc """
+  Gets a single task_permission.
+
+  Raises `Ecto.NoResultsError` if the Task permission does not exist.
+
+  ## Examples
+
+      iex> get_task_permission!(123)
+      %TaskPermission{}
+
+      iex> get_task_permission!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_task_permission!(id), do: Repo.get!(TaskPermission, id)
+
+  @doc """
+  Creates a task_permission.
+
+  ## Examples
+
+      iex> create_task_permission(%{field: value})
+      {:ok, %TaskPermission{}}
+
+      iex> create_task_permission(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_task_permission(attrs \\ %{}) do
+    %TaskPermission{}
+    |> TaskPermission.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a task_permission.
+
+  ## Examples
+
+      iex> update_task_permission(task_permission, %{field: new_value})
+      {:ok, %TaskPermission{}}
+
+      iex> update_task_permission(task_permission, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_task_permission(%TaskPermission{} = task_permission, attrs) do
+    task_permission
+    |> TaskPermission.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a task_permission.
+
+  ## Examples
+
+      iex> delete_task_permission(task_permission)
+      {:ok, %TaskPermission{}}
+
+      iex> delete_task_permission(task_permission)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_task_permission(%TaskPermission{} = task_permission) do
+    Repo.delete(task_permission)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking task_permission changes.
+
+  ## Examples
+
+      iex> change_task_permission(task_permission)
+      %Ecto.Changeset{data: %TaskPermission{}}
+
+  """
+  def change_task_permission(%TaskPermission{} = task_permission, attrs \\ %{}) do
+    TaskPermission.changeset(task_permission, attrs)
+  end
+
+
 end
